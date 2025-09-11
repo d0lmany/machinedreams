@@ -1,5 +1,5 @@
 # machinedreams
-Code samples and little projects for a desktop. <b>
+Code samples and little projects for a desktop. <br>
 You can see updates in [Changelog!](./CHANGELOG.md)
 
 ## Used technologies
