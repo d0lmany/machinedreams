@@ -1,3 +1,7 @@
-# rust files
+# python
+python/models/__pycache__
+# rust
 rust/target/
 rust/Cargo.*
+# other
+.vscode/
