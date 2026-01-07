@@ -4,6 +4,7 @@ const readline = require('readline').createInterface({
 });
 
 // fucking Zed don't get me chance to write the code 😭
+// TODO: rewrite self-state
 
 const toDecimal = (number: string, base: number) => {
   let decimal = 0;
