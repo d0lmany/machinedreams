@@ -12,3 +12,4 @@ See the detailed task list in [this file](./tasks.md).
 - An economics assignment from college
 - The simplest restaurant menu
 - Determining what to wear based on the weather
+- and much more 😉

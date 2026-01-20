@@ -3,5 +3,8 @@ python/models/__pycache__
 # rust
 rust/target/
 rust/Cargo.*
+# node
+node_modules
 # other
-.vscode/
+.vscode
+todo.md
