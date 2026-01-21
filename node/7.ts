@@ -70,10 +70,80 @@ const commandsDict = {
         })
     },
     'шифр Цезаря': () => askForPhrase(caesar),
-    'Выйти': () => rl.close(),
+    'шифр Атбаш': () => askForPhrase(atbash),
+    'Афинный шифр': () => askForPhrase(athens),
+    'Выйти': (): void => rl.close(),
 };
 const commandNames = Object.keys(commandsDict);
 
+const modInverse = (a: number, m: number): number | null => {
+    a = ((a % m) + m) % m;
+    for (let x = 1; x < m; x++) {
+        if ((a * x) % m === 1) return x;
+    }
+    return null;
+};
+const gcb = (a: number, b: number) => {
+    if (b === 0) return a;
+    else return gcb(b, a % b);
+}
+const athens = (phrase: string) => rl.question(`Введите ключи a и b через пробел (ключ a должен быть взаимно простым с ${dictionaries[currentDictionaryCode].length}): `, (input: string) => {
+    let [a, b]: number[] | string[] = input.trim().split(' ');
+    [a, b] = [Number(a), Number(b)];
+
+    console.log(a, b, gcb(a, dictionaries[currentDictionaryCode].length))
+    if (!isNaN(a) && !isNaN(b) && gcb(a, dictionaries[currentDictionaryCode].length) === 1) {
+        let newPhrase = '';
+        const dict = dictionaries[currentDictionaryCode].split('');
+
+        const invA = modInverse(a, dict.length);
+        if (invA === null) {
+            console.log('Не удалось найти обратный элемент. Возврат в меню.');
+            return;
+        }
+
+        for (const char of phrase) {
+            const idx = dict.indexOf(char);
+            if (idx === -1) {
+                newPhrase += char;
+                continue;
+            }
+
+            let newIndex: number;
+            if (mode === Mode.Encrypt) {
+                newIndex = (a * idx + b) % dict.length;
+            } else {
+                newIndex = (invA * (idx - b)) % dict.length;
+                if (newIndex < 0) newIndex += dict.length;
+            }
+            
+            newPhrase += dict[newIndex];
+        }
+
+        console.log(`Новая фраза: "${newPhrase}"`);
+    } else {
+        console.log('Не хватает ключа или ключи не являются взаимно простыми. Возврат в меню.');
+    }
+    ask();
+})
+const atbash = (phrase: string) => {
+    let newPhrase = '';
+    const dict = dictionaries[currentDictionaryCode].split('');
+
+    for (const char of phrase) {
+        const idx = dict.indexOf(char);
+        if (idx === -1) {
+            newPhrase += char;
+            continue;
+        }
+
+        const newIndex = dict.length - idx + 1;
+        newPhrase += dict[newIndex];
+    }
+
+    console.log(`Новая фраза: "${newPhrase}"`);
+    ask();
+}
 const caesar = (phrase: string) => {
     let newPhrase = '';
     const dict = dictionaries[currentDictionaryCode].split('');
@@ -93,7 +163,7 @@ const caesar = (phrase: string) => {
     console.log(`Новая фраза: "${newPhrase}"`);
     ask();
 }
-const askForPhrase = (method: Function) => rl.question(`Введите фразу для ${mode === Mode.Encrypt ? 'шифрования' : 'дешифрования'}: `, (input: string) => {
+const askForPhrase = (method: Function): void => rl.question(`Введите фразу для ${mode === Mode.Encrypt ? 'шифрования' : 'дешифрования'}: `, (input: string) => {
     const phrase = input.trim();
 
     if (phrase) {
